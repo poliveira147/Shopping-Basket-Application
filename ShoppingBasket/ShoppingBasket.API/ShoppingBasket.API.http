@@ -1,0 +1,6 @@
+# @ShoppingBasket.API_HostAddress = http://localhost:5285
+
+# GET {{ShoppingBasket.API_HostAddress}}/weatherforecast/
+# Accept: application/json
+
+# ###
