@@ -1,7 +1,15 @@
+using log4net;
+using log4net.Config;
+using System.IO;
+using System.Reflection;
 using ShoppingBasket.Core.Interfaces;
 using ShoppingBasket.Core.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Initialize log4net
+var logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());
+XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
 
 // Add services to the container
 builder.Services.AddControllers();
@@ -10,10 +18,15 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Register your BasketService
+// Register your BasketService and DiscountService
 builder.Services.AddScoped<IBasketService, BasketService>();
-// Register DiscountService
-builder.Services.AddScoped<IDiscountService, DiscountService>(); 
+builder.Services.AddScoped<IDiscountService, DiscountService>();
+
+// Register ILog as a singleton
+builder.Services.AddSingleton<ILog>(provider =>
+{
+    return LogManager.GetLogger(typeof(Program));
+});
 
 var app = builder.Build();
 
