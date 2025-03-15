@@ -9,10 +9,12 @@ namespace ShoppingBasket.API.Controllers
     public class BasketController : ControllerBase
     {
         private readonly IBasketService _basketService;
+        private readonly IDiscountService _discountService;
 
-        public BasketController(IBasketService basketService)
+        public BasketController(IBasketService basketService, IDiscountService discountService)
         {
             _basketService = basketService;
+            _discountService = discountService;
         }
 
         [HttpPost("calculate-total")]
@@ -23,8 +25,20 @@ namespace ShoppingBasket.API.Controllers
                 return BadRequest("Basket cannot be empty.");
             }
 
-            decimal total = _basketService.CalculateTotal(basketItems);
-            return Ok(new { Total = total });
+            decimal subtotal = _basketService.CalculateSubtotal(basketItems);
+            var discounts = _discountService.CalculateDiscounts(basketItems);
+            decimal total = subtotal - discounts.Sum(d => d.DiscountAmount);
+
+            return Ok(new
+            {
+                Subtotal = subtotal,
+                Discounts = discounts.Select(d => new
+                {
+                    d.Description,
+                    Amount = d.DiscountAmount
+                }),
+                Total = total
+            });
         }
 
         [HttpPost("generate-receipt")]

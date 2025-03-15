@@ -12,6 +12,8 @@ builder.Services.AddSwaggerGen();
 
 // Register your BasketService
 builder.Services.AddScoped<IBasketService, BasketService>();
+// Register DiscountService
+builder.Services.AddScoped<IDiscountService, DiscountService>(); 
 
 var app = builder.Build();
 
