@@ -1,4 +1,5 @@
-﻿using ShoppingBasket.Core.Models;
+﻿
+using ShoppingBasket.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace ShoppingBasket.Core.Interfaces
 {
     public interface IDiscountService
     {
-        List<Discount> CalculateDiscounts(List<BasketItem> basketItems);
+        Task<List<Discount>> CalculateDiscountsAsync(List<BasketItem> basketItems);
     }
 }

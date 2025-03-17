@@ -4,8 +4,24 @@ using System.IO;
 using System.Reflection;
 using ShoppingBasket.Core.Interfaces;
 using ShoppingBasket.Core.Services;
+using Microsoft.EntityFrameworkCore;
+
+using ShoppingBasket.Data.Repositories;
+
+using ShoppingBasket.Data.Database;
+using ShoppingBasket.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Add SQLite Database
+builder.Services.AddDbContext<ShoppingBasketDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Register repositories
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IBasketRepository, BasketRepository>();
+builder.Services.AddScoped<IDiscountRepository, DiscountRepository>();
+builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 
 // Initialize log4net
 var logRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());

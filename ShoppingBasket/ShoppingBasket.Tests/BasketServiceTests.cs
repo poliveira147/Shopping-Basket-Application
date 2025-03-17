@@ -29,5 +29,40 @@ namespace ShoppingBasket.Tests
         {
             throw new NotImplementedException();
         }
+
+        [TestMethod]
+        // Test that subtotal calculation handles an empty basket correctly
+        public void CalculateSubtotal_EmptyBasket_ReturnsZero()
+        {
+            throw new NotImplementedException();
+        }
+
+        [TestMethod]
+        // Test that the receipt still prints properly when no discounts are applied
+        public void GenerateReceipt_NoDiscounts_ReceiptFormatCorrect()
+        {
+            throw new NotImplementedException();
+        }
+
+        [TestMethod]
+        // Test that the receipt handles large quantities of items properly
+        public void GenerateReceipt_LargeQuantities_ReceiptDisplaysCorrectly()
+        {
+            throw new NotImplementedException();
+        }
+
+        [TestMethod]
+        // Test that total price calculation correctly handles a basket with multiple discounts
+        public void CalculateTotal_MultipleDiscounts_AppliesAllCorrectly()
+        {
+            throw new NotImplementedException();
+        }
+
+        [TestMethod]
+        // Test that an item not listed in the price dictionary does not break the calculation
+        public void CalculateSubtotal_UnrecognizedItem_IgnoresItem()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

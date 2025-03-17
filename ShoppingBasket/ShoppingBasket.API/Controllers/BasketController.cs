@@ -1,9 +1,7 @@
+
 using Microsoft.AspNetCore.Mvc;
 using ShoppingBasket.Core.Interfaces;
 using ShoppingBasket.Core.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ShoppingBasket.API.Controllers
 {
@@ -21,7 +19,7 @@ namespace ShoppingBasket.API.Controllers
         }
 
         [HttpPost("calculate-total")]
-        public IActionResult CalculateTotal([FromBody] List<BasketItem> basketItems)
+        public async Task<IActionResult> CalculateTotal([FromBody] List<BasketItem> basketItems)
         {
             try
             {
@@ -34,22 +32,32 @@ namespace ShoppingBasket.API.Controllers
                     });
                 }
 
-                // Validate basket items for empty names
+                // Validate required fields (ProductId and Quantity)
                 foreach (var item in basketItems)
                 {
-                    if (string.IsNullOrEmpty(item.Name))
+                    if (item.ProductId <= 0)
                     {
                         return BadRequest(new
                         {
                             errorCode = "VALIDATION_ERROR",
-                            message = "Item name cannot be null or empty."
+                            message = "ProductId must be greater than 0."
+                        });
+                    }
+
+                    if (item.Quantity <= 0)
+                    {
+                        return BadRequest(new
+                        {
+                            errorCode = "VALIDATION_ERROR",
+                            message = "Quantity must be greater than 0."
                         });
                     }
                 }
 
-                decimal subtotal = _basketService.CalculateSubtotal(basketItems);
-                var discounts = _discountService.CalculateDiscounts(basketItems);
-                decimal total = subtotal - discounts.Sum(d => d.DiscountAmount);
+                // Fetch product details and calculate totals
+                var subtotal = await _basketService.CalculateSubtotalAsync(basketItems);
+                var discounts = await _discountService.CalculateDiscountsAsync(basketItems);
+                var total = subtotal - discounts.Sum(d => d.DiscountAmount);
 
                 return Ok(new
                 {
@@ -90,7 +98,7 @@ namespace ShoppingBasket.API.Controllers
         }
 
         [HttpPost("generate-receipt")]
-        public IActionResult GenerateReceipt([FromBody] List<BasketItem> basketItems)
+        public async Task<IActionResult> GenerateReceipt([FromBody] List<BasketItem> basketItems)
         {
             try
             {
@@ -103,20 +111,30 @@ namespace ShoppingBasket.API.Controllers
                     });
                 }
 
-                // Validate basket items for empty names
+                // Validate required fields (ProductId and Quantity)
                 foreach (var item in basketItems)
                 {
-                    if (string.IsNullOrEmpty(item.Name))
+                    if (item.ProductId <= 0)
                     {
                         return BadRequest(new
                         {
                             errorCode = "VALIDATION_ERROR",
-                            message = "Item name cannot be null or empty."
+                            message = "ProductId must be greater than 0."
+                        });
+                    }
+
+                    if (item.Quantity <= 0)
+                    {
+                        return BadRequest(new
+                        {
+                            errorCode = "VALIDATION_ERROR",
+                            message = "Quantity must be greater than 0."
                         });
                     }
                 }
 
-                string receipt = _basketService.GenerateReceipt(basketItems);
+                // Generate the receipt
+                string receipt = await _basketService.GenerateReceiptAsync(basketItems);
                 return Ok(new { Receipt = receipt });
             }
             catch (ArgumentException ex)

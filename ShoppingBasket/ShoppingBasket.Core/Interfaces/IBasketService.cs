@@ -1,4 +1,5 @@
-﻿using ShoppingBasket.Core.Models;
+﻿
+using ShoppingBasket.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +10,8 @@ namespace ShoppingBasket.Core.Interfaces
 {
     public interface IBasketService
     {
-        decimal CalculateSubtotal(List<BasketItem> basketItems);
-        decimal CalculateTotal(List<BasketItem> basketItems);
-        string GenerateReceipt(List<BasketItem> basketItems);
+        Task<decimal> CalculateSubtotalAsync(List<BasketItem> basketItems);
+        Task<decimal> CalculateTotalAsync(List<BasketItem> basketItems);
+        Task<string> GenerateReceiptAsync(List<BasketItem> basketItems);
     }
 }

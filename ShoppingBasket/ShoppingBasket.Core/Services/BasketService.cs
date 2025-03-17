@@ -1,124 +1,88 @@
-﻿using log4net;
+﻿// ShoppingBasket.Core/Services/BasketService.cs
 using ShoppingBasket.Core.Interfaces;
 using ShoppingBasket.Core.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ShoppingBasket.Core.Services
 {
     public class BasketService : IBasketService
     {
-        private readonly Dictionary<string, decimal> _prices = new()
-        {
-            { "Soup", 0.65m },
-            { "Bread", 0.80m },
-            { "Milk", 1.30m },
-            { "Apples", 1.00m }
-        };
+        private readonly IProductRepository _productRepository;
+        private readonly IDiscountService _discountService; 
+        private readonly ITransactionRepository _transactionRepository;
 
-        private readonly IDiscountService _discountService;
-        private readonly ILog _log;
-
-        public BasketService(IDiscountService discountService, ILog log)
+        public BasketService(IProductRepository productRepository, IDiscountService discountService, ITransactionRepository transactionRepository)
         {
-            _discountService = discountService ?? throw new ArgumentNullException(nameof(discountService));
-            _log = log ?? throw new ArgumentNullException(nameof(log));
+            _productRepository = productRepository;
+            _discountService = discountService;
+            _transactionRepository = transactionRepository;
         }
 
-        public decimal CalculateSubtotal(List<BasketItem> basketItems)
+        public async Task<decimal> CalculateSubtotalAsync(List<BasketItem> basketItems)
         {
-            if (basketItems == null || basketItems.Count == 0)
+            if (basketItems == null || !basketItems.Any())
             {
-                _log.Error("Basket items cannot be null or empty.");
                 throw new ArgumentException("Basket items cannot be null or empty.");
             }
 
             decimal subtotal = 0m;
             foreach (var item in basketItems)
             {
-                if (string.IsNullOrEmpty(item.Name))
+                var product = await _productRepository.GetByIdAsync(item.ProductId);
+                if (product == null)
                 {
-                    _log.Error("Item name cannot be null or empty.");
-                    throw new ArgumentException("Item name cannot be null or empty.");
+                    throw new KeyNotFoundException($"Product with ID '{item.ProductId}' not found.");
                 }
 
-                if (_prices.ContainsKey(item.Name))
-                {
-                    subtotal += _prices[item.Name] * item.Quantity;
-                }
-                else
-                {
-                    _log.Error($"Price for item '{item.Name}' not found.");
-                    throw new KeyNotFoundException($"Price for item '{item.Name}' not found.");
-                }
+                // Populate the Product field
+                item.Product = product;
+
+                subtotal += product.Price * item.Quantity;
             }
-
-            _log.Info($"Subtotal calculated: {subtotal}");
             return subtotal;
         }
 
-        public decimal CalculateTotal(List<BasketItem> basketItems)
+        public async Task<decimal> CalculateTotalAsync(List<BasketItem> basketItems)
         {
-            try
-            {
-                decimal subtotal = CalculateSubtotal(basketItems);
-                decimal totalDiscount = _discountService.CalculateDiscounts(basketItems).Sum(d => d.DiscountAmount);
-                decimal total = subtotal - totalDiscount;
-
-                _log.Info($"Total calculated: {total}");
-                return total;
-            }
-            catch (Exception ex)
-            {
-                _log.Error("An error occurred while calculating the total.", ex);
-                throw new ApplicationException("An error occurred while calculating the total.", ex);
-            }
+            decimal subtotal = await CalculateSubtotalAsync(basketItems);
+            var discounts = await _discountService.CalculateDiscountsAsync(basketItems);
+            decimal totalDiscount = discounts.Sum(d => d.DiscountAmount);
+            return subtotal - totalDiscount;
         }
 
-        public string GenerateReceipt(List<BasketItem> basketItems)
+        public async Task<string> GenerateReceiptAsync(List<BasketItem> basketItems)
         {
-            try
+            var subtotal = await CalculateSubtotalAsync(basketItems);
+            var discounts = await _discountService.CalculateDiscountsAsync(basketItems);
+            var total = await CalculateTotalAsync(basketItems);
+
+            // Create a new Transaction
+            var transaction = new Transaction
             {
-                if (basketItems == null || basketItems.Count == 0)
-                {
-                    _log.Error("Basket items cannot be null or empty.");
-                    throw new ArgumentException("Basket items cannot be null or empty.");
-                }
+                TransactionDate = DateTime.UtcNow, // Set the transaction date to the current time
+                TotalAmount = total, // Set the total amount
+                Items = basketItems, // Add the basket items to the transaction
+                Discounts = discounts // Add the discounts to the transaction
+            };
 
-                decimal subtotal = CalculateSubtotal(basketItems);
-                List<Discount> discounts = _discountService.CalculateDiscounts(basketItems);
-                decimal total = subtotal - discounts.Sum(d => d.DiscountAmount);
+            // Save the transaction to the database
+            await _transactionRepository.AddAsync(transaction);
 
-                string receipt = "Receipt:\n";
-                foreach (var item in basketItems)
-                {
-                    receipt += $"{item.Quantity} x {item.Name} @ €{_prices[item.Name]:F2} each\n";
-                }
-
-                receipt += $"\nSubtotal: €{subtotal:F2}";
-
-                if (discounts.Count > 0)
-                {
-                    receipt += "\nDiscounts Applied:";
-                    foreach (var discount in discounts)
-                    {
-                        receipt += $"\n- {discount.Description}: -€{discount.DiscountAmount:F2}";
-                    }
-                }
-                else
-                {
-                    receipt += "\nNo Discounts Applied";
-                }
-
-                receipt += $"\nTotal: €{total:F2}";
-                _log.Info("Receipt generated successfully.");
-                return receipt;
-            }
-            catch (Exception ex)
+            var receipt = $"Subtotal: €{subtotal:0.00}\n";
+            if (discounts.Any())
             {
-                _log.Error("An error occurred while generating the receipt.", ex);
-                return $"Error generating receipt: {ex.Message}";
+                receipt += "Discounts:\n";
+                foreach (var discount in discounts)
+                {
+                    receipt += $"{discount.Description}: -€{discount.DiscountAmount:0.00}\n";
+                }
             }
+            receipt += $"Total: €{total:0.00}";
+
+            return receipt;
         }
     }
 }
