@@ -22,12 +22,20 @@ namespace ShoppingBasket.Data.Repositories
 
         public async Task<Transaction> GetByIdAsync(int id)
         {
-            return await _context.Transactions.FindAsync(id);
+            return await _context.Transactions
+                .Include(t => t.Items) // Include BasketItems
+                .ThenInclude(i => i.Product) // Include Product for each BasketItem
+                .Include(t => t.Discounts) // Include Discounts
+                .FirstOrDefaultAsync(t => t.Id == id);
         }
 
         public async Task<IEnumerable<Transaction>> GetAllAsync()
         {
-            return await _context.Transactions.ToListAsync();
+            return await _context.Transactions
+                .Include(t => t.Items) // Include BasketItems
+                .ThenInclude(i => i.Product) // Include Product for each BasketItem
+                .Include(t => t.Discounts) // Include Discounts
+                .ToListAsync();
         }
 
         public async Task AddAsync(Transaction entity)

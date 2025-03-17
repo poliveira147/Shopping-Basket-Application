@@ -10,11 +10,8 @@ namespace ShoppingBasket.Core.Interfaces
     public interface IDiscountRepository
     {
         public Task<Discount> GetByIdAsync(int id);
-
-
         public Task<IEnumerable<Discount>> GetAllAsync();
-
-
         public Task AddAsync(Discount entity);
+        Task<Discount> GetByDescriptionAsync(string description);
     }
 }

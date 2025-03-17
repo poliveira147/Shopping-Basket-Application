@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShoppingBasket.Core.Interfaces;
 using ShoppingBasket.Core.Models;
-
+using ShoppingBasket.Core.DTOs;
 [ApiController]
 [Route("api/products")]
 public class ProductsController : ControllerBase
@@ -17,7 +17,14 @@ public class ProductsController : ControllerBase
     public async Task<IActionResult> GetAllProducts()
     {
         var products = await _productRepository.GetAllAsync();
-        return Ok(products);
+        // Map Product entities to ProductDTO
+        var productDTOs = products.Select(p => new ProductDTO
+        {
+            Name = p.Name,
+            Price = p.Price
+        }).ToList();
+
+        return Ok(productDTOs);
     }
 
     [HttpGet("{id}")]
@@ -25,19 +32,44 @@ public class ProductsController : ControllerBase
     {
         var product = await _productRepository.GetByIdAsync(id);
         if (product == null)
+        {
             return NotFound();
-        return Ok(product);
+        }
+
+        // Map Product entity to ProductDTO
+        var productDTO = new ProductDTO
+        {
+            Name = product.Name,
+            Price = product.Price
+        };
+
+        return Ok(productDTO);
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddProduct([FromBody] Product product)
+    public async Task<IActionResult> AddProduct([FromBody] ProductDTO productDTO)
     {
-        if (product == null || string.IsNullOrEmpty(product.Name) || product.Price <= 0)
+        if (productDTO == null || !ModelState.IsValid)
         {
             return BadRequest(new { errorCode = "VALIDATION_ERROR", message = "Invalid product data." });
         }
 
+        // Map ProductDTO to Product entity
+        var product = new Product
+        {
+            Name = productDTO.Name,
+            Price = productDTO.Price
+        };
+
         await _productRepository.AddAsync(product);
-        return Ok(product);
+
+        // Map the saved Product entity back to ProductDTO for the response
+        var responseDTO = new ProductDTO
+        {
+            Name = product.Name,
+            Price = product.Price
+        };
+
+        return Ok(responseDTO);
     }
 }

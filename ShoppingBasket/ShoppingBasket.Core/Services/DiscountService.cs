@@ -9,10 +9,11 @@ namespace ShoppingBasket.Core.Services
     public class DiscountService : IDiscountService
     {
         private readonly IProductRepository _productRepository;
-
-        public DiscountService(IProductRepository productRepository)
+        private readonly IDiscountRepository _discountRepository;
+        public DiscountService(IProductRepository productRepository, IDiscountRepository discountRepository)
         {
             _productRepository = productRepository;
+            _discountRepository = discountRepository;
         }
 
         public async Task<List<Discount>> CalculateDiscountsAsync(List<BasketItem> basketItems)
@@ -44,12 +45,24 @@ namespace ShoppingBasket.Core.Services
                 decimal appleDiscount = (appleItem.Product.Price * appleItem.Quantity) * 0.10m;
                 if (appleDiscount > 0)
                 {
-                    discounts.Add(new Discount
+                    // Check if the discount already exists in the database
+                    var existingAppleDiscount = await _discountRepository.GetByDescriptionAsync("10% off apples");
+                    if (existingAppleDiscount == null)
                     {
-                        ItemName = "Apples",
-                        Description = "10% off apples",
-                        DiscountAmount = appleDiscount
-                    });
+                        // Create a new discount if it doesn't exist
+                        var newDiscount = new Discount
+                        {
+                            ItemName = "Apples",
+                            Description = "10% off apples",
+                            DiscountAmount = appleDiscount
+                        };
+                        discounts.Add(newDiscount);
+                    }
+                    else
+                    {
+                        // Use the existing discount
+                        discounts.Add(existingAppleDiscount);
+                    }
                 }
             }
 
@@ -64,12 +77,24 @@ namespace ShoppingBasket.Core.Services
 
                 if (breadDiscount > 0)
                 {
-                    discounts.Add(new Discount
+                    // Check if the discount already exists in the database
+                    var existingBreadDiscount = await _discountRepository.GetByDescriptionAsync("Buy 2 soups, get 1 bread half price");
+                    if (existingBreadDiscount == null)
                     {
-                        ItemName = "Bread",
-                        Description = "Buy 2 soups, get 1 bread half price",
-                        DiscountAmount = breadDiscount
-                    });
+                        // Create a new discount if it doesn't exist
+                        var newDiscount = new Discount
+                        {
+                            ItemName = "Bread",
+                            Description = "Buy 2 soups, get 1 bread half price",
+                            DiscountAmount = breadDiscount
+                        };
+                        discounts.Add(newDiscount);
+                    }
+                    else
+                    {
+                        // Use the existing discount
+                        discounts.Add(existingBreadDiscount);
+                    }
                 }
             }
 

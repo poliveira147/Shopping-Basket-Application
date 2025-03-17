@@ -30,5 +30,11 @@ namespace ShoppingBasket.Infrastructure.Repositories
             await _context.Discounts.AddAsync(entity);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<Discount> GetByDescriptionAsync(string description)
+        {
+            return await _context.Discounts
+      .FirstOrDefaultAsync(d => d.Description == description);
+        }
     }
 }
