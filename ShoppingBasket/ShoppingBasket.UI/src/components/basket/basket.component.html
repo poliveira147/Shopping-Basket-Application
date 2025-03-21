@@ -1,0 +1,17 @@
+<div class="basket-container">
+  <h2>Basket</h2>
+  <div *ngFor="let product of products; let i = index" class="product-item">
+    <label>{{ product.name }} ({{ product.price | currency }})</label>
+    <input type="number" [(ngModel)]="basketItems[i].quantity" min="0" />
+  </div>
+  <button (click)="calculateTotal()">Calculate Total</button>
+  <button (click)="generateReceipt()">Generate Receipt</button>
+
+  <div *ngIf="subtotal > 0" class="totals">
+    <h3>Subtotal: {{ subtotal | currency }}</h3>
+    <div *ngFor="let discount of discounts" class="discount">
+      <p>{{ discount.description }}: {{ discount.discountAmount | currency }}</p>
+    </div>
+    <h3>Total: {{ total | currency }}</h3>
+  </div>
+</div>

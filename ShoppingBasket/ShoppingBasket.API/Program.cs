@@ -31,8 +31,8 @@ XmlConfigurator.Configure(logRepository, new FileInfo("log4net.config"));
 builder.Services.AddControllers();
 
 // Add Swagger services
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+//builder.Services.AddEndpointsApiExplorer();
+//builder.Services.AddSwaggerGen();
 
 // Register your BasketService and DiscountService
 builder.Services.AddScoped<IBasketService, BasketService>();
@@ -44,14 +44,28 @@ builder.Services.AddSingleton<ILog>(provider =>
     return LogManager.GetLogger(typeof(Program));
 });
 
+var allowedOrigins = builder.Configuration.GetValue<string>("allowedOrigins")?.Split(",") ?? new string[] { };
+
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins(allowedOrigins)
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials(); 
+    });
+});
 var app = builder.Build();
 
-// Configure the HTTP request pipeline
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger(); // Enable Swagger UI
-    app.UseSwaggerUI(); // Enable Swagger UI in the browser
-}
+app.UseCors();
+
+//// Configure the HTTP request pipeline
+//if (app.Environment.IsDevelopment())
+//{
+//    app.UseSwagger(); // Enable Swagger UI
+//    app.UseSwaggerUI(); // Enable Swagger UI in the browser
+//}
 
 app.UseRouting();
 app.UseAuthorization();

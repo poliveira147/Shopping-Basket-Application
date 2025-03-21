@@ -398,3 +398,51 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+
+# Ignore Node.js dependencies and build artifacts
+/node_modules
+/dist
+/.angular/cache
+
+# Ignore IDE and editor-specific files
+/.vscode
+/.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Ignore npm and yarn logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ignore environment files (if not committed)
+/.env
+/.env.local
+/.env.*.local
+
+# Ignore compiled output
+*.js
+*.js.map
+*.d.ts
+*.ngsummary.json
+*.ngfactory.ts
+
+# Ignore temporary files
+*.tmp
+*.bak
+
+# Ignore test results
+/coverage
+/junit
+
+# Ignore e2e test results
+/e2e/*.js
+/e2e/*.map
+
+# Ignore package manager specific files
+package-lock.json
+yarn.lock
