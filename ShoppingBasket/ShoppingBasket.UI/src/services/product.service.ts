@@ -4,9 +4,9 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 export interface Product {
-  productId: number;
-  name: string;
-  price: number;
+  id: number;     
+  name: string;    
+  price: number;   
 }
 
 @Injectable({

@@ -32,17 +32,23 @@ export class BasketComponent implements OnInit {
   ngOnInit() {
     this.productService.getProducts().subscribe((data) => {
       this.products = data;
-      this.basketItems = this.products.map(p => ({ productId: p.productId, quantity: 0 }));
+      this.basketItems = this.products.map(p => ({
+        productId: p.id,
+        quantity: 0
+      }));
+      console.log("basketItems after initialization:", this.basketItems);
     });
   }
 
   calculateTotal() {
     const itemsToSend = this.basketItems.filter(item => item.quantity > 0);
-
+    this.receipt='';
     if (itemsToSend.length === 0) {
       alert("Please add at least one item to the basket.");
       return;
     }
+
+    console.log("Payload sent to backend:", itemsToSend);
 
     this.basketService.calculateTotal(itemsToSend).subscribe(
       (response: BasketResponse) => {

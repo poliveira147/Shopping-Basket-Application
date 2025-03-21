@@ -9,7 +9,6 @@ import { ReceiptComponent } from '../components/receipt/receipt.component';
   template: `
     <div class="app-container">
       <app-basket></app-basket>
-      <app-receipt></app-receipt>
     </div>
   `,
   styles: [

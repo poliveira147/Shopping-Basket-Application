@@ -17,14 +17,7 @@ public class ProductsController : ControllerBase
     public async Task<IActionResult> GetAllProducts()
     {
         var products = await _productRepository.GetAllAsync();
-        // Map Product entities to ProductDTO
-        var productDTOs = products.Select(p => new ProductDTO
-        {
-            Name = p.Name,
-            Price = p.Price
-        }).ToList();
-
-        return Ok(productDTOs);
+        return Ok(products);
     }
 
     [HttpGet("{id}")]
