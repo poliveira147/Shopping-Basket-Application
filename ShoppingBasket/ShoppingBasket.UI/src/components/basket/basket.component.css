@@ -1,0 +1,161 @@
+.basket-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .basket-container h2 {
+    font-size: 1.8em;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .product-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.3s ease;
+  }
+  
+  .product-item:hover {
+    background-color: #f5f5f5;
+  }
+  
+  .product-item:last-child {
+    border-bottom: none;
+  }
+  
+  .product-item label {
+    font-size: 1.1em;
+    color: #555;
+    flex: 1;
+    margin-right: 10px;
+  }
+  
+  .product-item input {
+    width: 60px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    text-align: center;
+    transition: border-color 0.3s ease;
+  }
+  
+  .product-item input:focus {
+    border-color: #007bff;
+    outline: none;
+  }
+  
+  .button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  .button-group button {
+    flex: 1;
+  }
+  
+  button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    margin: 10px 5px;
+    transition: all 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+  }
+  
+  button:active {
+    transform: scale(0.95);
+  }
+  
+  .totals {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .totals h3 {
+    margin: 10px 0;
+    font-size: 1.2em;
+    color: #333;
+  }
+  
+  .discount {
+    margin: 5px 0;
+    color: #28a745;
+  }
+  
+  .discount p {
+    margin: 0;
+    font-size: 1em;
+  }
+  
+  .receipt-container {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .receipt-container h2 {
+    margin-top: 0;
+    font-size: 1.5em;
+    color: #333;
+  }
+  
+  .receipt-container pre {
+    white-space: pre-wrap;
+    font-family: monospace;
+    font-size: 1em;
+    color: #555;
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+  }
+  /* src/app/components/basket/basket.component.css */
+.transactions-scrollable-container {
+  max-height: 400px; /* Set a max height for the container */
+  overflow-y: auto; /* Enable vertical scrolling */
+  border: 1px solid #ccc; /* Optional: Add a border */
+  padding: 10px; /* Optional: Add padding */
+  margin-top: 10px; /* Optional: Add margin */
+}
+
+.toggle-transactions-button {
+  margin-top: 10px; /* Optional: Add margin */
+}
+
+/* src/app/components/basket/basket.component.css */
+.clear-basket-button {
+  background-color: #ff4444; /* Red background */
+  color: white; /* White text */
+  border: none;
+  padding: 10px 20px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.clear-basket-button:hover {
+  background-color: #cc0000; /* Darker red on hover */
+}

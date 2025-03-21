@@ -85,4 +85,17 @@ public class TransactionsController : ControllerBase
             return StatusCode(500, new { errorCode = "INTERNAL_ERROR", message = ex.Message });
         }
     }
+    [HttpDelete("delete-all")]
+    public async Task<IActionResult> DeleteAllTransactions()
+    {
+        try
+        {
+            await _transactionRepository.DeleteAllAsync();
+            return NoContent(); // 204 No Content
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { errorCode = "INTERNAL_ERROR", message = ex.Message });
+        }
+    }
 }

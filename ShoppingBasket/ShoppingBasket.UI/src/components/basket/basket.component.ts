@@ -1,3 +1,4 @@
+// src/app/components/basket/basket.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common'; // Import CommonModule
 import { FormsModule } from '@angular/forms';
@@ -5,6 +6,7 @@ import { ProductService } from '../../services/product.service';
 import { BasketService } from '../../services/basket.service';
 import { BasketResponse, BasketItem } from '../../services/basket.service';
 import { Product } from '../../services/product.service';
+import { TransactionsComponent } from '../transactions/transactions.component'; // Import TransactionsComponent
 
 interface Discount {
   itemName: string;
@@ -15,7 +17,7 @@ interface Discount {
 @Component({
   selector: 'app-basket',
   standalone: true,
-  imports: [CommonModule, FormsModule], // Add CommonModule here
+  imports: [CommonModule, FormsModule, TransactionsComponent], // Add TransactionsComponent here
   templateUrl: './basket.component.html',
   styleUrls: ['./basket.component.css']
 })
@@ -27,9 +29,20 @@ export class BasketComponent implements OnInit {
   total = 0;
   receipt: string = '';
 
-  constructor(private productService: ProductService, private basketService: BasketService) {}
+    // Toggle transactions visibility
+    showTransactions = false;
+
+  constructor(
+    private productService: ProductService,
+    private basketService: BasketService
+  ) {}
 
   ngOnInit() {
+    this.loadProducts();
+  }
+
+  // Load products
+  loadProducts() {
     this.productService.getProducts().subscribe((data) => {
       this.products = data;
       this.basketItems = this.products.map(p => ({
@@ -40,9 +53,10 @@ export class BasketComponent implements OnInit {
     });
   }
 
+  // Calculate total
   calculateTotal() {
     const itemsToSend = this.basketItems.filter(item => item.quantity > 0);
-    this.receipt='';
+    this.receipt = '';
     if (itemsToSend.length === 0) {
       alert("Please add at least one item to the basket.");
       return;
@@ -62,6 +76,7 @@ export class BasketComponent implements OnInit {
     );
   }
 
+  // Generate receipt
   generateReceipt() {
     const itemsToSend = this.basketItems.filter(item => item.quantity > 0);
 
@@ -73,5 +88,29 @@ export class BasketComponent implements OnInit {
         console.error("Error generating receipt:", error);
       }
     );
+  }
+    // Toggle transactions visibility
+    toggleTransactions() {
+      this.showTransactions = !this.showTransactions;
+    }
+    // Clear basket and receipt
+  clearBasket() {
+    if (confirm('Are you sure you want to clear the basket and receipt? This action cannot be undone.')) {
+      // Reset basket items
+      this.basketItems = this.products.map(p => ({
+        productId: p.id,
+        quantity: 0
+      }));
+
+      // Reset totals and discounts
+      this.subtotal = 0;
+      this.total = 0;
+      this.discounts = [];
+
+      // Clear receipt
+      this.receipt = '';
+
+      console.log('Basket and receipt cleared successfully');
+    }
   }
 }

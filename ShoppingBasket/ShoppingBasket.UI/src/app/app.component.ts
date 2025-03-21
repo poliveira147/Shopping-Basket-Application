@@ -1,14 +1,16 @@
 import { Component } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { BasketComponent } from '../components/basket/basket.component';
 import { ReceiptComponent } from '../components/receipt/receipt.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [BasketComponent, ReceiptComponent], // Import standalone components
+  imports: [BasketComponent, RouterModule], // Import standalone components
   template: `
     <div class="app-container">
       <app-basket></app-basket>
+       <router-outlet></router-outlet> <!-- Add router-outlet -->
     </div>
   `,
   styles: [

@@ -43,5 +43,15 @@ namespace ShoppingBasket.Data.Repositories
             await _context.Transactions.AddAsync(entity);
             await _context.SaveChangesAsync();
         }
+
+        public async Task DeleteAllAsync()
+        {
+            var transactions = await _context.Transactions
+                .Include(t => t.Items) // Include BasketItems
+                .ToListAsync();
+
+            _context.Transactions.RemoveRange(transactions);
+            await _context.SaveChangesAsync();
+        }
     }
 }

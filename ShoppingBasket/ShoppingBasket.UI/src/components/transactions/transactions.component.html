@@ -1,0 +1,31 @@
+<!-- src/app/components/transactions/transactions.component.html -->
+<div class="transactions-container">
+    <h2>Transactions</h2>
+    <button (click)="loadTransactions()">Refresh Transactions</button>
+    <button (click)="deleteAllTransactions()" class="delete-all-button">Delete All Transactions</button>
+  
+    <div *ngIf="transactions.length > 0; else noTransactions">
+      <div *ngFor="let transaction of transactions" class="transaction-item">
+        <h3>Transaction Date: {{ transaction.transactionDate | date:'medium' }}</h3>
+        <p>Total Amount: {{ transaction.totalAmount | currency:'EUR' }}</p>
+  
+        <h4>Items:</h4>
+        <ul>
+          <li *ngFor="let item of transaction.items">
+            {{ item.productName }} - {{ item.quantity }} x {{ item.price | currency:'EUR' }}
+          </li>
+        </ul>
+  
+        <h4>Discounts:</h4>
+        <ul>
+          <li *ngFor="let discount of transaction.discounts">
+            {{ discount.description }}: {{ discount.discountAmount | currency:'EUR' }}
+          </li>
+        </ul>
+      </div>
+    </div>
+  
+    <ng-template #noTransactions>
+      <p>No transactions found.</p>
+    </ng-template>
+  </div>

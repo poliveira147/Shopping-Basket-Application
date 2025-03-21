@@ -21,19 +21,22 @@ namespace ShoppingBasket.Data.Database
             modelBuilder.Entity<BasketItem>()
                 .HasOne(bi => bi.Product) // BasketItem has one Product
                 .WithMany() // Product can have many BasketItems
-                .HasForeignKey(bi => bi.ProductId); // Foreign key is ProductId
+                .HasForeignKey(bi => bi.ProductId) // Foreign key is ProductId
+                .OnDelete(DeleteBehavior.Restrict); // Prevent deleting a Product if it has associated BasketItems
 
             // Configure the relationship between BasketItem and Transaction
             modelBuilder.Entity<BasketItem>()
                 .HasOne(bi => bi.Transaction) // BasketItem has one Transaction
                 .WithMany(t => t.Items) // Transaction has many BasketItems
-                .HasForeignKey(bi => bi.TransactionId); // Foreign key is TransactionId
+                .HasForeignKey(bi => bi.TransactionId) // Foreign key is TransactionId
+                .OnDelete(DeleteBehavior.Cascade); // Cascade delete: Deleting a Transaction deletes its BasketItems
 
             // Configure the relationship between Discount and Transaction
             modelBuilder.Entity<Discount>()
                 .HasOne(d => d.Transaction) // Discount has one Transaction
                 .WithMany(t => t.Discounts) // Transaction has many Discounts
-                .HasForeignKey(d => d.TransactionId); // Foreign key is TransactionId
+                .HasForeignKey(d => d.TransactionId) // Foreign key is TransactionId
+                .OnDelete(DeleteBehavior.Cascade); // Cascade delete: Deleting a Transaction deletes its Discounts
 
             // Seed initial data
             modelBuilder.Entity<Product>().HasData(

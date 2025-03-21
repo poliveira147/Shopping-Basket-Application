@@ -1,3 +1,4 @@
+<!-- src/app/components/basket/basket.component.html -->
 <div class="basket-container">
   <h2>Basket</h2>
   <div *ngFor="let product of products; let i = index" class="product-item">
@@ -6,7 +7,8 @@
   </div>
   <button (click)="calculateTotal()">Calculate Total</button>
   <button (click)="generateReceipt()">Generate Receipt</button>
-
+  <button (click)="clearBasket()" class="clear-basket-button">Clear Basket</button>
+  
   <div *ngIf="subtotal > 0" class="totals">
     <h3>Subtotal: {{ subtotal | currency:'EUR' }}</h3>
     <div *ngFor="let discount of discounts" class="discount">
@@ -15,10 +17,22 @@
     <h3>Total: {{ total | currency:'EUR' }}</h3>
   </div>
 
-  <!-- Move the receipt container inside the basket container -->
-  <div *ngIf="receipt !=''" class="showReceipt">
-  <div class="receipt-container">
-    <h2>Receipt</h2>
-    <pre>{{ receipt }}</pre>
+  <!-- Receipt section -->
+  <div *ngIf="receipt !== ''" class="showReceipt">
+    <div class="receipt-container">
+      <h2>Receipt</h2>
+      <pre>{{ receipt }}</pre>
+    </div>
   </div>
+
+
+ <!-- Toggle Transactions Button -->
+ <button (click)="toggleTransactions()" class="toggle-transactions-button">
+  {{ showTransactions ? 'Hide Transactions' : 'Show Transactions' }}
+</button>
+
+<!-- Transactions section with scrollable container -->
+<div *ngIf="showTransactions" class="transactions-scrollable-container">
+  <app-transactions></app-transactions>
+</div>
 </div>
