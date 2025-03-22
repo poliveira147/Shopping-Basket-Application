@@ -242,10 +242,15 @@ The frontend is built with  **Angular**  and follows a modular structure. It com
 
 
 User -> Frontend (Angular): Interacts with UI
+
 Frontend -> Backend (API): Sends HTTP requests
+
 Backend -> Core Layer: Processes business logic
+
 Core Layer -> Data Layer: Fetches/saves data
+
 Backend -> Frontend: Returns response
+
 Frontend -> User: Displays results
 
 ----------
