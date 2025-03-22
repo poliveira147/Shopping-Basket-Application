@@ -18,6 +18,9 @@ namespace SeleniumTests.Tests
             Thread.Sleep(1000); // Wait to see highlight
         }
 
+        /// <summary>
+        /// This test verifies that users can add items to the basket and calculate the total price.
+        /// </summary>
         [TestMethod]
         public void AddItemsToBasket_AndCalculateTotal()
         {
@@ -48,9 +51,12 @@ namespace SeleniumTests.Tests
             HighlightElement(totalElement);
             Assert.IsTrue(totalElement.Text.Contains("€"), "Total price not updated properly!");
 
-            Console.WriteLine("✅ Total price calculated successfully!");
+            Console.WriteLine("Total price calculated successfully!");
         }
 
+        /// <summary>
+        /// This test verifies that users can generate a receipt after adding items to the basket.
+        /// </summary>
         [TestMethod]
         public void GenerateReceipt()
         {
@@ -75,9 +81,12 @@ namespace SeleniumTests.Tests
             HighlightElement(receiptElement);
             Assert.IsFalse(string.IsNullOrEmpty(receiptElement.Text), "Receipt is empty!");
 
-            Console.WriteLine("✅ Receipt generated successfully!");
+            Console.WriteLine("Receipt generated successfully!");
         }
 
+        /// <summary>
+        /// This test verifies that users can clear the basket and reset all inputs to zero.
+        /// </summary>
         [TestMethod]
         public void ClearBasket()
         {
@@ -101,11 +110,11 @@ namespace SeleniumTests.Tests
                 IAlert alert = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.AlertIsPresent());
                 Console.WriteLine("Alert Text: " + alert.Text);
                 alert.Accept();  // Click "OK" on alert
-                Console.WriteLine("✅ Alert accepted!");
+                Console.WriteLine("Alert accepted!");
             }
             catch (WebDriverTimeoutException)
             {
-                Console.WriteLine("⚠️ No alert appeared!");
+                Console.WriteLine("No alert appeared!");
             }
 
             Thread.Sleep(3000); // Wait for changes to apply
@@ -119,7 +128,7 @@ namespace SeleniumTests.Tests
                 Thread.Sleep(1000);
             }
 
-            Console.WriteLine("✅ Basket cleared successfully!");
+            Console.WriteLine("Basket cleared successfully!");
         }
     }
 }

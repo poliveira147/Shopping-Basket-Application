@@ -19,7 +19,7 @@ namespace ShoppingBasket.Core.Services
             IProductRepository productRepository,
             IDiscountService discountService,
             ITransactionRepository transactionRepository,
-            ILog logger) 
+            ILog logger)
         {
             _productRepository = productRepository;
             _discountService = discountService;
@@ -27,6 +27,12 @@ namespace ShoppingBasket.Core.Services
             _logger = logger;
         }
 
+        /// <summary>
+        /// Calculates the subtotal of the basket by summing the price of each item multiplied by its quantity.
+        /// Throws an exception if the basket is empty or null.
+        /// </summary>
+        /// <param name="basketItems">List of items in the basket.</param>
+        /// <returns>The subtotal amount.</returns>
         public async Task<decimal> CalculateSubtotalAsync(List<BasketItem> basketItems)
         {
             if (basketItems == null || !basketItems.Any())
@@ -54,6 +60,11 @@ namespace ShoppingBasket.Core.Services
             return subtotal;
         }
 
+        /// <summary>
+        /// Calculates the total amount of the basket by subtracting the total discounts from the subtotal.
+        /// </summary>
+        /// <param name="basketItems">List of items in the basket.</param>
+        /// <returns>The total amount after applying discounts.</returns>
         public async Task<decimal> CalculateTotalAsync(List<BasketItem> basketItems)
         {
             decimal subtotal = await CalculateSubtotalAsync(basketItems);
@@ -65,6 +76,12 @@ namespace ShoppingBasket.Core.Services
             return total;
         }
 
+        /// <summary>
+        /// Generates a receipt for the basket, including subtotal, discounts, and total amount.
+        /// Saves the transaction to the database.
+        /// </summary>
+        /// <param name="basketItems">List of items in the basket.</param>
+        /// <returns>A formatted receipt string.</returns>
         public async Task<string> GenerateReceiptAsync(List<BasketItem> basketItems)
         {
             var subtotal = await CalculateSubtotalAsync(basketItems);

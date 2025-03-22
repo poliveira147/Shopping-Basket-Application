@@ -17,6 +17,9 @@ namespace SeleniumTests.Tests
             Thread.Sleep(1000);
         }
 
+        /// <summary>
+        /// This test verifies that users can view the list of transactions.
+        /// </summary>
         [TestMethod]
         public void ViewTransactions()
         {
@@ -35,9 +38,12 @@ namespace SeleniumTests.Tests
             HighlightElement(transactionsContainer);
             Assert.IsTrue(transactionsContainer.Displayed, "Transactions section is not visible!");
 
-            Console.WriteLine("✅ Transactions are visible!");
+            Console.WriteLine("Transactions are visible!");
         }
 
+        /// <summary>
+        /// This test verifies that users can delete all transactions.
+        /// </summary>
         [Ignore]
         [TestMethod]
         public void DeleteAllTransactions()
@@ -65,7 +71,7 @@ namespace SeleniumTests.Tests
             // Verify transactions are deleted
             wait.Until(d => !d.FindElement(By.CssSelector(".transactions-scrollable-container")).Displayed);
 
-            Console.WriteLine("✅ All transactions deleted successfully!");
+            Console.WriteLine("All transactions deleted successfully!");
         }
     }
 }

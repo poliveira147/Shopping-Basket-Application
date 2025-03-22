@@ -24,6 +24,13 @@ namespace ShoppingBasket.Core.Services
             _logger = logger;
         }
 
+        /// <summary>
+        /// Calculates applicable discounts for the basket items.
+        /// Applies a 10% discount on apples and a multi-buy discount for bread when purchasing 2 soups.
+        /// Throws an exception if the basket is empty or null.
+        /// </summary>
+        /// <param name="basketItems">List of items in the basket.</param>
+        /// <returns>A list of applied discounts.</returns>
         public async Task<List<Discount>> CalculateDiscountsAsync(List<BasketItem> basketItems)
         {
             if (basketItems == null || basketItems.Count == 0)
