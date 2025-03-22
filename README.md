@@ -90,9 +90,20 @@ This layer exposes RESTful endpoints for the frontend to interact with the backe
 
 #### 4.  **Tests Layer**
 
-This layer contains unit tests for the core services to ensure correctness and reliability.
+This layer contains **Unit tests** for the core services and  **GUI tests**  to ensure correctness and reliability. The tests are divided into two categories:
 
-##### Key Tests:
+1.  **Unit Tests**: Focus on testing individual components and services in isolation.
+    
+2.  **GUI Tests**: Focus on testing the frontend user interface and its interaction with the backend.
+    
+
+----------
+
+#### **1. Unit Tests**
+
+Unit tests are written for the core services to ensure that the business logic works as expected. These tests use  **MSTest**  as the testing framework and  **Moq**  for mocking dependencies.
+
+##### **Key Tests:**
 
 -   **BasketService Tests**:
     
@@ -101,11 +112,28 @@ This layer contains unit tests for the core services to ensure correctness and r
     -   Edge cases like empty baskets, invalid product IDs, and discounts.
         
 -   **DiscountService Tests**:
+
+-   Test methods for  `CalculateDiscountsAsync`.
     
-    -   Test methods for  `CalculateDiscountsAsync`.
+-   Scenarios like apple discounts (10% off) and multi-buy discounts (e.g., buy 2 soups, get 1 bread at half price).
         
-    -   Scenarios like apple discounts, multi-buy discounts (e.g., buy 2 soups, get 1 bread at half price).
+#### **2. GUI Tests**
+
+GUI tests are written to ensure that the frontend user interface behaves as expected and interacts correctly with the backend. These tests are implemented using  **Selenium**.
+
+##### **Key Tests:**
+
+-   **BasketComponent Tests**:
+    
+    -   Verify that the basket displays the correct items and quantities.
         
+    -   Test the "Calculate Total" and "Generate Receipt" buttons to ensure they interact with the backend and display the correct results.
+
+**TransactionsComponent Tests**:
+
+-   Verify that the transactions page displays all saved transactions.
+    
+-   Test the "Delete All Transactions" button to ensure it clears the transaction history.
 
 ----------
 
@@ -244,7 +272,7 @@ Frontend -> User: Displays results
 -   **RxJS**: Library for reactive programming and state management.
     
 -   **Bootstrap**: CSS framework for responsive design.
--  **SELENIUM**: TTesting framework for UI tests.
+-  **SELENIUM**: Testing framework for UI tests.
    
     
 
@@ -289,8 +317,8 @@ Frontend -> User: Displays results
     
     -   Better UI
     -  Better position of UI components
-    - More User Friendly buttons
-    - Login/logout
+    -  More User-Friendly buttons
+    -  Login/Logout
     
 4.  **Code Related**:
     
