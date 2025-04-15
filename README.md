@@ -69,8 +69,10 @@ This layer is responsible for data access and persistence. It includes repositor
     -   `DiscountRepository`: Implements  `IDiscountRepository`  to fetch and manage discounts.
         
     -   `TransactionRepository`: Implements  `ITransactionRepository`  to save transaction data.
-        
 
+-    **Database**:
+    -    The Current Database is SQL Lite.
+         
 #### 3.  **API Layer**
 
 This layer exposes RESTful endpoints for the frontend to interact with the backend.
@@ -156,7 +158,10 @@ The frontend is built with  **Angular**  and follows a modular structure. It com
     -   Displays a list of all transactions.
         
     -   Allows users to delete all transactions.
-        
+
+-   **ReceiptComponent**:
+    
+    -   Displays the receipt with the price and all the discounts.
 
 #### 2.  **Services**
 
